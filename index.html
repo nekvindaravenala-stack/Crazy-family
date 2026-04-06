@@ -189,8 +189,8 @@
 </div>
 
 <script>
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxPd0WfuOiLhp5sXkIXg8CuYUdYSWQMswFjeBxFMgisvdrwczT6v5dd6CGlS2SJnFMV9A/exec';
-const CLAUDE_URL = 'https://script.google.com/macros/s/AKfycbxPd0WfuOiLhp5sXkIXg8CuYUdYSWQMswFjeBxFMgisvdrwczT6v5dd6CGlS2SJnFMV9A/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbysVvqXuf4EncSUToLbXj3A6VpJcMb-0D4nsdkCTL8baZU4UFnoluFjASP8tKQ8Pn79Fg/exec';
+const CLAUDE_URL = 'https://script.google.com/macros/s/AKfycbysVvqXuf4EncSUToLbXj3A6VpJcMb-0D4nsdkCTL8baZU4UFnoluFjASP8tKQ8Pn79Fg/exec';
 
 let saveRec=null, searchRec=null;
 let isSaveRec=false, isSearchRec=false;
@@ -244,11 +244,10 @@ async function searchQuery(question) {
   document.getElementById('answer-card').classList.add('visible');
 
   try {
-    const resp = await fetch(CLAUDE_URL, {
-      method:'POST',
+    const resp = await fetch(CLAUDE_URL + '?q=' + encodeURIComponent(question), {
+      method:'GET',
       mode:'cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({action:'search', question:question})
+      
     });
 
     const result = await resp.json();
@@ -275,7 +274,7 @@ async function saveEntry(){
   if(!currentTranscript&&!currentPhotoBase64){setStatus('save-status','Nejdřív mluv nebo vyfotit.','err');return;}
   const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Ukládám...';setStatus('save-status','Ukládám...');
   try{
-    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({co:currentTranscript||'(foto)',popis:currentTranscript,foto:currentPhotoBase64?'[foto]':'',kde:''})});
+    await fetch(SHEET_URL,{method:'GET',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({co:currentTranscript||'(foto)',popis:currentTranscript,foto:currentPhotoBase64?'[foto]':'',kde:''})});
     const now=new Date();const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
     localHistory.unshift({text:currentTranscript||'(foto)',time:t,hasPhoto:!!currentPhotoBase64});
     renderHistory();setStatus('save-status','✓ Uloženo!','ok');clearEntry();
