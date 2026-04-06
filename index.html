@@ -96,8 +96,13 @@
 </div>
 
 <div class="panel hidden" id="panel-search">
+  <button class="mic-btn" id="search-mic-btn" onclick="toggleSearchRecord()">
+    <span class="mic-icon">🔍</span>
+    <span class="mic-label" id="search-mic-label">Zeptat se</span>
+    <span class="mic-sub" id="search-mic-sub">Kde je vývrtka?</span>
+  </button>
   <div class="search-box">
-    <input class="search-input" id="search-input" type="text" placeholder="Kde je vývrtka?" onkeydown="if(event.key==='Enter')doSearch()">
+    <input class="search-input" id="search-input" type="text" placeholder="nebo napiš..." onkeydown="if(event.key==='Enter')doSearch()">
     <button class="search-go" onclick="doSearch()">→</button>
   </div>
   <div class="answer-card" id="answer-card">
