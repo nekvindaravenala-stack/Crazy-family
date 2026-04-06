@@ -113,7 +113,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdd0Jee8kAwcqddWvr1OwVv2RODJjaAx1eRoq3-vRXcDkG_zH82y62hux9y-qqIkPtog/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDEeczmIPyjITZqT6uinxYuX2WF6SPEseE5J_UAGfcowgkCygB_J-iVRrdwEtTllR6YA/exec';
 const WORKER_URL = 'https://crazyfamily.nekvinda-ravenala.workers.dev';
 
 
@@ -161,7 +161,7 @@ async function saveEntry(){
   if(!currentTranscript&&!currentPhotoBase64){setStatus('save-status','Nejdřív mluv nebo vyfotit.','err');return;}
   const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Ukládám...';setStatus('save-status','Ukládám...');
   try{
-    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({co:currentTranscript||'(foto)',popis:currentTranscript,foto:currentPhotoBase64?'[foto]':'',kde:''})});
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({co:currentTranscript||'(foto)',foto:currentPhotoBase64||''})});
     const now=new Date();const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
     localHistory.unshift({text:currentTranscript||'(foto)',time:t,hasPhoto:!!currentPhotoBase64});
     renderHistory();setStatus('save-status','✓ Uloženo!','ok');clearEntry();
@@ -202,6 +202,13 @@ async function doSearch(){
     if(data.answer){
       document.getElementById('answer-text').textContent=data.answer;
       setStatus('search-status','');
+      const oldFc=document.getElementById('foto-container');if(oldFc)oldFc.remove();
+      if(data.fotky&&data.fotky.length){
+        const div=document.createElement('div');div.id='foto-container';
+        div.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;';
+        data.fotky.forEach(url=>{const img=document.createElement('img');img.src=url;img.style.cssText='width:calc(33% - 6px);border-radius:8px;object-fit:cover;aspect-ratio:1;cursor:pointer;';img.onclick=()=>img.style.width=img.style.width==='100%'?'calc(33% - 6px)':'100%';div.appendChild(img);});
+        document.getElementById('answer-card').appendChild(div);
+      }
       if(window.speechSynthesis){const u=new SpeechSynthesisUtterance(data.answer);u.lang='cs-CZ';speechSynthesis.speak(u);}
     }
   }catch(e){
