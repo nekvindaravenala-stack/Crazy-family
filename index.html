@@ -161,6 +161,25 @@ async function saveEntry(){
   btn.disabled=false;btn.textContent='✓ Uložit';
 }
 
+function toggleSearchRecord(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setStatus('search-status','Zkus Chrome.','err');return;}
+  const r=new SR();r.lang='cs-CZ';r.continuous=false;r.interimResults=false;
+  document.getElementById('search-mic-btn').classList.add('recording');
+  document.getElementById('search-mic-label').textContent='Poslouchám...';
+  document.getElementById('search-mic-sub').textContent='Mluv';
+  r.onresult=e=>{
+    const q=e.results[0][0].transcript;
+    document.getElementById('search-input').value=q;
+    document.getElementById('search-mic-btn').classList.remove('recording');
+    document.getElementById('search-mic-label').textContent='Zeptat se';
+    document.getElementById('search-mic-sub').textContent='Kde je vývrtka?';
+    doSearch();
+  };
+  r.onerror=()=>{document.getElementById('search-mic-btn').classList.remove('recording');document.getElementById('search-mic-label').textContent='Zeptat se';document.getElementById('search-mic-sub').textContent='Kde je vývrtka?';};
+  r.start();
+}
+
 async function doSearch(){
   const q=document.getElementById('search-input').value.trim();
   if(!q)return;
