@@ -11,204 +11,88 @@
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #f5f5f0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2rem 1rem 4rem;
     gap: 1.5rem;
+    position: relative;
+    overflow-x: hidden;
   }
-
-  h1 {
-    font-size: 28px;
-    font-weight: 600;
-    color: #1a1a1a;
-    letter-spacing: -0.5px;
+  .bg {
+    position: fixed;
+    inset: 0;
+    background: url('baby.jpg') center center / cover no-repeat;
+    filter: blur(3px) brightness(0.35);
+    z-index: 0;
+    transform: scale(1.05);
   }
-
-  .subtitle {
-    font-size: 14px;
-    color: #888;
-    margin-top: -1rem;
-  }
-
+  body > * { position: relative; z-index: 1; }
+  h1 { font-size: 28px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; text-shadow: 0 1px 8px rgba(0,0,0,0.4); }
+  .subtitle { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: -1rem; }
   .mic-btn {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    border: 2px solid #e0e0d8;
-    background: #ffffff;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: transform 0.15s, background 0.15s, border-color 0.15s;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    -webkit-tap-highlight-color: transparent;
+    width: 200px; height: 200px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    transition: transform 0.15s, background 0.15s;
   }
-
   .mic-btn:active { transform: scale(0.96); }
-  .mic-btn.recording {
-    background: #fff5f5;
-    border-color: #e24b4a;
-    animation: pulse 1.2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 2px 12px rgba(226,75,74,0.15); }
-    50% { transform: scale(1.04); box-shadow: 0 4px 24px rgba(226,75,74,0.3); }
-  }
-
+  .mic-btn.recording { background: rgba(226,75,74,0.3); border-color: #e24b4a; animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
   .mic-icon { font-size: 56px; line-height: 1; }
-  .mic-label { font-size: 16px; font-weight: 600; color: #1a1a1a; }
-  .mic-sub { font-size: 12px; color: #999; }
-
+  .mic-label { font-size: 16px; font-weight: 600; color: #ffffff; }
+  .mic-sub { font-size: 12px; color: rgba(255,255,255,0.7); }
   .photo-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: 12px;
-    border: 1.5px solid #e0e0d8;
-    background: #ffffff;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 500;
-    color: #1a1a1a;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    transition: background 0.1s;
+    display: flex; align-items: center; gap: 8px; padding: 12px 24px;
+    border-radius: 12px; border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    cursor: pointer; font-size: 15px; font-weight: 500; color: #ffffff; transition: background 0.1s;
   }
-  .photo-btn:active { background: #f0f0e8; }
-
+  .photo-btn:active { background: rgba(255,255,255,0.25); }
   #photo-input { display: none; }
-
   .preview-card {
-    width: 100%;
-    max-width: 400px;
-    background: #ffffff;
-    border: 1.5px solid #e0e0d8;
-    border-radius: 16px;
-    padding: 1.25rem;
-    display: none;
-    flex-direction: column;
-    gap: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    width: 100%; max-width: 400px;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.5); border-radius: 16px; padding: 1.25rem;
+    display: none; flex-direction: column; gap: 14px;
   }
   .preview-card.visible { display: flex; }
-
-  .preview-label { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
-  .preview-text {
-    font-size: 16px;
-    color: #1a1a1a;
-    min-height: 48px;
-    line-height: 1.5;
-    border: 1px solid #e8e8e0;
-    border-radius: 8px;
-    padding: 10px 12px;
-    background: #fafaf8;
-  }
-
-  .preview-img {
-    width: 100%;
-    border-radius: 10px;
-    max-height: 240px;
-    object-fit: cover;
-    display: none;
-  }
+  .preview-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .preview-text { font-size: 16px; color: #1a1a1a; min-height: 48px; line-height: 1.5; border: 1px solid #e8e8e0; border-radius: 8px; padding: 10px 12px; background: #fafaf8; }
+  .preview-img { width: 100%; border-radius: 10px; max-height: 240px; object-fit: cover; display: none; }
   .preview-img.visible { display: block; }
-
   .btn-row { display: flex; gap: 8px; }
-
-  .save-btn {
-    flex: 1;
-    padding: 13px;
-    border-radius: 10px;
-    border: none;
-    background: #1a1a1a;
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-  }
+  .save-btn { flex: 1; padding: 13px; border-radius: 10px; border: none; background: #1a1a1a; color: #ffffff; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
   .save-btn:active { transform: scale(0.97); }
-  .save-btn:disabled { opacity: 0.35; cursor: default; }
-
-  .clear-btn {
-    padding: 13px 18px;
-    border-radius: 10px;
-    border: 1.5px solid #e0e0d8;
-    background: #f5f5f0;
-    color: #666;
-    font-size: 15px;
-    cursor: pointer;
-  }
-
-  .status {
-    font-size: 13px;
-    color: #888;
-    text-align: center;
-    min-height: 20px;
-    padding: 0 1rem;
-  }
-  .status.ok { color: #0f6e56; font-weight: 500; }
-  .status.err { color: #a32d2d; }
-
-  .divider {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .divider-line { flex: 1; height: 1px; background: #e0e0d8; }
-  .divider-text { font-size: 12px; color: #bbb; white-space: nowrap; }
-
-  .history {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .history-item {
-    background: #ffffff;
-    border: 1px solid #e8e8e0;
-    border-radius: 12px;
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .hi-text { font-size: 14px; color: #1a1a1a; line-height: 1.4; }
-  .hi-time { font-size: 11px; color: #bbb; }
-
-  .empty-history { font-size: 13px; color: #bbb; text-align: center; padding: 1rem; }
-
-  .interim { color: #999; font-style: italic; }
+  .save-btn:disabled { opacity: 0.35; }
+  .clear-btn { padding: 13px 18px; border-radius: 10px; border: 1px solid #e0e0d8; background: #f5f5f0; color: #666; font-size: 15px; cursor: pointer; }
+  .status { font-size: 13px; color: rgba(255,255,255,0.8); text-align: center; min-height: 20px; }
+  .status.ok { color: #7de8c0; font-weight: 500; }
+  .status.err { color: #ffaaaa; }
+  .divider { width: 100%; max-width: 400px; display: flex; align-items: center; gap: 10px; }
+  .divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.25); }
+  .divider-text { font-size: 12px; color: rgba(255,255,255,0.5); white-space: nowrap; }
+  .history { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 8px; }
+  .history-item { background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+  .hi-text { font-size: 14px; color: #ffffff; line-height: 1.4; }
+  .hi-time { font-size: 11px; color: rgba(255,255,255,0.5); }
+  .empty-history { font-size: 13px; color: rgba(255,255,255,0.4); text-align: center; padding: 1rem; }
 </style>
 </head>
 <body>
-
+<div class="bg"></div>
 <h1>CrazyFamily 🏠</h1>
 <p class="subtitle">Kde je co doma</p>
-
 <button class="mic-btn" id="mic-btn" onclick="toggleRecord()">
   <span class="mic-icon">🎙️</span>
   <span class="mic-label" id="mic-label">Mluvit</span>
   <span class="mic-sub" id="mic-sub">Stiskni a mluv česky</span>
 </button>
-
-<button class="photo-btn" onclick="document.getElementById('photo-input').click()">
-  📷 Přidat foto
-</button>
+<button class="photo-btn" onclick="document.getElementById('photo-input').click()">📷 Přidat foto</button>
 <input type="file" id="photo-input" accept="image/*" capture="environment" onchange="handlePhoto(event)">
-
 <div class="preview-card" id="preview">
   <div>
     <div class="preview-label">Co jsi řekla</div>
@@ -220,173 +104,44 @@
     <button class="clear-btn" onclick="clearEntry()">Zrušit</button>
   </div>
 </div>
-
 <div class="status" id="status"></div>
-
 <div class="divider">
   <div class="divider-line"></div>
   <div class="divider-text">uložené záznamy</div>
   <div class="divider-line"></div>
 </div>
-
 <div class="history" id="history"></div>
-
 <script>
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwXsX8jV305XmIW8lPMcaR0JF2W7pmRPWtY6s-NaDs0BDd7rmi3f8idZ-Y1ynieC_xp7g/exec';
-
-let recognition = null;
-let isRecording = false;
-let currentTranscript = '';
-let currentPhotoBase64 = '';
-let localHistory = [];
-
-function setStatus(msg, type) {
-  const el = document.getElementById('status');
-  el.textContent = msg;
-  el.className = 'status ' + (type || '');
-}
-
-function showPreview() {
-  document.getElementById('preview').classList.add('visible');
-}
-
-function toggleRecord() {
-  if (isRecording) { stopRecord(); return; }
-
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    setStatus('Hlasový vstup nefunguje — zkus Chrome na Androidu.', 'err');
-    return;
-  }
-
-  recognition = new SR();
-  recognition.lang = 'cs-CZ';
-  recognition.continuous = false;
-  recognition.interimResults = true;
-
-  recognition.onstart = () => {
-    isRecording = true;
-    document.getElementById('mic-btn').classList.add('recording');
-    document.getElementById('mic-label').textContent = 'Nahrávám...';
-    document.getElementById('mic-sub').textContent = 'Stiskni znovu pro stop';
-    setStatus('Poslouchám...');
-  };
-
-  recognition.onresult = (e) => {
-    let interim = '';
-    let final = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) final += e.results[i][0].transcript;
-      else interim += e.results[i][0].transcript;
-    }
-    const text = final || interim;
-    currentTranscript = final || currentTranscript;
-    const el = document.getElementById('transcript');
-    el.textContent = text || '...';
-    el.className = final ? 'preview-text' : 'preview-text interim';
-    showPreview();
-  };
-
-  recognition.onerror = (e) => {
-    setStatus('Chyba mikrofonu: ' + e.error, 'err');
-    stopRecord();
-  };
-
-  recognition.onend = () => { stopRecord(); };
-
+let recognition=null,isRecording=false,currentTranscript='',currentPhotoBase64='',localHistory=[];
+function setStatus(msg,type){const el=document.getElementById('status');el.textContent=msg;el.className='status '+(type||'');}
+function showPreview(){document.getElementById('preview').classList.add('visible');}
+function toggleRecord(){
+  if(isRecording){stopRecord();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setStatus('Zkus Chrome na Androidu.','err');return;}
+  recognition=new SR();recognition.lang='cs-CZ';recognition.continuous=false;recognition.interimResults=true;
+  recognition.onstart=()=>{isRecording=true;document.getElementById('mic-btn').classList.add('recording');document.getElementById('mic-label').textContent='Nahrávám...';document.getElementById('mic-sub').textContent='Stiskni znovu pro stop';setStatus('Poslouchám...');};
+  recognition.onresult=(e)=>{let interim='',final='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript;}const text=final||interim;if(final)currentTranscript=final;document.getElementById('transcript').textContent=text||'...';showPreview();};
+  recognition.onerror=(e)=>{setStatus('Chyba: '+e.error,'err');stopRecord();};
+  recognition.onend=()=>{stopRecord();};
   recognition.start();
 }
-
-function stopRecord() {
-  isRecording = false;
-  if (recognition) { try { recognition.stop(); } catch(e){} recognition = null; }
-  document.getElementById('mic-btn').classList.remove('recording');
-  document.getElementById('mic-label').textContent = 'Mluvit';
-  document.getElementById('mic-sub').textContent = 'Stiskni a mluv česky';
-  if (currentTranscript) setStatus('Zkontroluj a ulož.');
-  else setStatus('');
+function stopRecord(){isRecording=false;if(recognition){try{recognition.stop();}catch(e){}recognition=null;}document.getElementById('mic-btn').classList.remove('recording');document.getElementById('mic-label').textContent='Mluvit';document.getElementById('mic-sub').textContent='Stiskni a mluv česky';if(currentTranscript)setStatus('Zkontroluj a ulož.');else setStatus('');}
+function handlePhoto(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=(e)=>{currentPhotoBase64=e.target.result;const img=document.getElementById('preview-img');img.src=currentPhotoBase64;img.classList.add('visible');showPreview();setStatus('Foto přidáno.');};reader.readAsDataURL(file);}
+function clearEntry(){currentTranscript='';currentPhotoBase64='';document.getElementById('transcript').textContent='...';const img=document.getElementById('preview-img');img.src='';img.classList.remove('visible');document.getElementById('preview').classList.remove('visible');document.getElementById('photo-input').value='';setStatus('');}
+async function saveEntry(){
+  if(!currentTranscript&&!currentPhotoBase64){setStatus('Nejdřív mluv nebo vyfotit.','err');return;}
+  const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Ukládám...';setStatus('Ukládám...');
+  try{
+    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({co:currentTranscript||'(foto)',popis:currentTranscript,foto:currentPhotoBase64?'[foto]':'',kde:''})});
+    const now=new Date();const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+    localHistory.unshift({text:currentTranscript||'(foto)',time:t,hasPhoto:!!currentPhotoBase64});
+    renderHistory();setStatus('✓ Uloženo!','ok');clearEntry();
+  }catch(e){setStatus('Chyba: '+e.message,'err');}
+  btn.disabled=false;btn.textContent='✓ Uložit';
 }
-
-function handlePhoto(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    currentPhotoBase64 = e.target.result;
-    const img = document.getElementById('preview-img');
-    img.src = currentPhotoBase64;
-    img.classList.add('visible');
-    showPreview();
-    setStatus('Foto přidáno. Mluv nebo rovnou ulož.');
-  };
-  reader.readAsDataURL(file);
-}
-
-function clearEntry() {
-  currentTranscript = '';
-  currentPhotoBase64 = '';
-  document.getElementById('transcript').textContent = '...';
-  const img = document.getElementById('preview-img');
-  img.src = '';
-  img.classList.remove('visible');
-  document.getElementById('preview').classList.remove('visible');
-  document.getElementById('photo-input').value = '';
-  setStatus('');
-}
-
-async function saveEntry() {
-  if (!currentTranscript && !currentPhotoBase64) {
-    setStatus('Nejdřív mluv nebo vyfotit.', 'err');
-    return;
-  }
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  btn.textContent = 'Ukládám...';
-  setStatus('Ukládám...');
-
-  const payload = {
-    co: currentTranscript || '(pouze foto)',
-    popis: currentTranscript,
-    foto: currentPhotoBase64 ? '[foto přiloženo]' : '',
-    kde: ''
-  };
-
-  try {
-    await fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    const now = new Date();
-    const t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    localHistory.unshift({ text: currentTranscript || '(foto)', time: t, hasPhoto: !!currentPhotoBase64 });
-    renderHistory();
-    setStatus('✓ Uloženo do Google Sheets!', 'ok');
-    clearEntry();
-  } catch(e) {
-    setStatus('Chyba: ' + e.message, 'err');
-  }
-
-  btn.disabled = false;
-  btn.textContent = '✓ Uložit';
-}
-
-function renderHistory() {
-  const el = document.getElementById('history');
-  if (!localHistory.length) {
-    el.innerHTML = '<div class="empty-history">Zatím nic uloženo</div>';
-    return;
-  }
-  el.innerHTML = localHistory.map(item => `
-    <div class="history-item">
-      <div class="hi-text">${item.hasPhoto ? '📷 ' : ''}${item.text}</div>
-      <div class="hi-time">${item.time}</div>
-    </div>
-  `).join('');
-}
-
+function renderHistory(){const el=document.getElementById('history');if(!localHistory.length){el.innerHTML='<div class="empty-history">Zatím nic uloženo</div>';return;}el.innerHTML=localHistory.map(item=>`<div class="history-item"><div class="hi-text">${item.hasPhoto?'📷 ':''}${item.text}</div><div class="hi-time">${item.time}</div></div>`).join('');}
 renderHistory();
 </script>
 </body>
