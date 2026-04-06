@@ -189,8 +189,8 @@
 </div>
 
 <script>
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwXsX8jV305XmIW8lPMcaR0JF2W7pmRPWtY6s-NaDs0BDd7rmi3f8idZ-Y1ynieC_xp7g/exec';
-const CLAUDE_URL = 'https://api.anthropic.com/v1/messages';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxPd0WfuOiLhp5sXkIXg8CuYUdYSWQMswFjeBxFMgisvdrwczT6v5dd6CGlS2SJnFMV9A/exec';
+const CLAUDE_URL = 'https://script.google.com/macros/s/AKfycbxPd0WfuOiLhp5sXkIXg8CuYUdYSWQMswFjeBxFMgisvdrwczT6v5dd6CGlS2SJnFMV9A/exec';
 
 let saveRec=null, searchRec=null;
 let isSaveRec=false, isSearchRec=false;
@@ -244,25 +244,15 @@ async function searchQuery(question) {
   document.getElementById('answer-card').classList.add('visible');
 
   try {
-    const sheetResp = await fetch(SHEET_URL+'?action=get', {mode:'cors'});
-    let data = [];
-    try { data = await sheetResp.json(); } catch(e) {}
-
-    const knowledge = data.slice(1).map(row=>row[2]||row[3]||'').filter(Boolean).join('\n');
-
     const resp = await fetch(CLAUDE_URL, {
       method:'POST',
+      mode:'cors',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:200,
-        system:'Jsi pomocník pro domácnost CrazyFamily. Odpovídej česky, stručně a přátelsky. Máš k dispozici záznamy kde jsou věci doma. Pokud informaci nemáš, řekni to.',
-        messages:[{role:'user',content:'Záznamy:\n'+knowledge+'\n\nOtázka: '+question}]
-      })
+      body: JSON.stringify({action:'search', question:question})
     });
 
     const result = await resp.json();
-    const answer = result.content?.[0]?.text || 'Bohužel nevím.';
+    const answer = result.answer || 'Bohužel nevím.';
     document.getElementById('answer-text').textContent=answer;
     setStatus('search-status','');
 
