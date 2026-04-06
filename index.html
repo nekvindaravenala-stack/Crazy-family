@@ -13,9 +13,9 @@
   body > * { position: relative; z-index: 1; }
   h1 { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -0.5px; text-shadow: 0 1px 8px rgba(0,0,0,0.4); }
   .subtitle { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: -1rem; }
-  .mode-tabs { display: flex; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 4px; }
-  .mode-tab { padding: 8px 20px; border-radius: 9px; border: none; background: transparent; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-  .mode-tab.active { background: rgba(255,255,255,0.9); color: #1a1a1a; }
+  .tabs { display: flex; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 4px; }
+  .tab { padding: 8px 20px; border-radius: 9px; border: none; background: transparent; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .tab.active { background: rgba(255,255,255,0.9); color: #1a1a1a; }
   .panel { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
   .panel.hidden { display: none; }
   .mic-btn { width: 180px; height: 180px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: transform 0.15s; }
@@ -36,16 +36,23 @@
   .save-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; background: #1a1a1a; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
   .save-btn:disabled { opacity: 0.35; }
   .clear-btn { padding: 12px 16px; border-radius: 10px; border: 1px solid #e0e0d8; background: #f5f5f0; color: #666; font-size: 14px; cursor: pointer; }
+
+  .search-box { width: 100%; display: flex; gap: 8px; }
+  .search-input { flex: 1; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); color: #fff; font-size: 15px; outline: none; }
+  .search-input::placeholder { color: rgba(255,255,255,0.4); }
+  .search-go { padding: 14px 18px; border-radius: 12px; border: none; background: rgba(255,255,255,0.9); color: #1a1a1a; font-size: 14px; font-weight: 600; cursor: pointer; }
+
   .answer-card { width: 100%; background: rgba(255,255,255,0.92); border-radius: 16px; padding: 1.25rem; display: none; flex-direction: column; gap: 8px; }
   .answer-card.visible { display: flex; }
   .answer-question { font-size: 12px; color: #888; }
   .answer-text { font-size: 17px; color: #1a1a1a; font-weight: 500; line-height: 1.4; }
+
   .status { font-size: 13px; color: rgba(255,255,255,0.75); text-align: center; min-height: 20px; }
   .status.ok { color: #7de8c0; font-weight: 500; }
   .status.err { color: #ffaaaa; }
   .divider { width: 100%; display: flex; align-items: center; gap: 10px; }
-  .divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.2); }
-  .divider-text { font-size: 11px; color: rgba(255,255,255,0.4); white-space: nowrap; }
+  .div-line { flex: 1; height: 1px; background: rgba(255,255,255,0.2); }
+  .div-text { font-size: 11px; color: rgba(255,255,255,0.4); }
   .history { width: 100%; display: flex; flex-direction: column; gap: 8px; }
   .history-item { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; }
   .hi-text { font-size: 13px; color: #fff; line-height: 1.4; }
@@ -58,9 +65,9 @@
 <h1>CrazyFamily 🏠</h1>
 <p class="subtitle">Kde je co doma</p>
 
-<div class="mode-tabs">
-  <button class="mode-tab active" onclick="switchMode('save')">💾 Uložit</button>
-  <button class="mode-tab" onclick="switchMode('search')">🔍 Hledat</button>
+<div class="tabs">
+  <button class="tab active" onclick="switchMode('save')">💾 Uložit</button>
+  <button class="tab" onclick="switchMode('search')">🔍 Hledat</button>
 </div>
 
 <div class="panel" id="panel-save">
@@ -81,16 +88,15 @@
     </div>
   </div>
   <div class="status" id="save-status"></div>
-  <div class="divider"><div class="divider-line"></div><div class="divider-text">uložené záznamy</div><div class="divider-line"></div></div>
+  <div class="divider"><div class="div-line"></div><div class="div-text">uložené záznamy</div><div class="div-line"></div></div>
   <div class="history" id="history"></div>
 </div>
 
 <div class="panel hidden" id="panel-search">
-  <button class="mic-btn" id="search-mic-btn" onclick="toggleSearchRecord()">
-    <span class="mic-icon">🔍</span>
-    <span class="mic-label" id="search-mic-label">Zeptat se</span>
-    <span class="mic-sub" id="search-mic-sub">Kde je vývrtka?</span>
-  </button>
+  <div class="search-box">
+    <input class="search-input" id="search-input" type="text" placeholder="Kde je vývrtka?" onkeydown="if(event.key==='Enter')doSearch()">
+    <button class="search-go" onclick="doSearch()">→</button>
+  </div>
   <div class="answer-card" id="answer-card">
     <div class="answer-question" id="answer-question"></div>
     <div class="answer-text" id="answer-text"></div>
@@ -100,14 +106,14 @@
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdd0Jee8kAwcqddWvr1OwVv2RODJjaAx1eRoq3-vRXcDkG_zH82y62hux9y-qqIkPtog/exec';
+const CLAUDE_URL = 'https://api.anthropic.com/v1/messages';
 
-let saveRec=null, searchRec=null;
-let isSaveRec=false, isSearchRec=false;
+let saveRec=null, isSaveRec=false;
 let currentTranscript='', currentPhotoBase64='';
 let localHistory=[];
 
 function switchMode(mode){
-  document.querySelectorAll('.mode-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&mode==='save')||(i===1&&mode==='search')));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&mode==='save')||(i===1&&mode==='search')));
   document.getElementById('panel-save').classList.toggle('hidden',mode!=='save');
   document.getElementById('panel-search').classList.toggle('hidden',mode!=='search');
 }
@@ -115,44 +121,28 @@ function switchMode(mode){
 function setStatus(id,msg,type){const el=document.getElementById(id);el.textContent=msg;el.className='status '+(type||'');}
 function showPreview(){document.getElementById('preview').classList.add('visible');}
 
-function startRecognition(lang, onResult, onEnd) {
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){return null;}
-  const r=new SR(); r.lang=lang; r.continuous=false; r.interimResults=true;
-  r.onresult=onResult; r.onend=onEnd; r.onerror=(e)=>{onEnd();};
-  r.start(); return r;
-}
-
 function toggleSaveRecord(){
   if(isSaveRec){if(saveRec)try{saveRec.stop();}catch(e){}return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setStatus('save-status','Zkus Chrome na Androidu.','err');return;}
   isSaveRec=true;
   document.getElementById('save-mic-btn').classList.add('recording');
   document.getElementById('save-mic-label').textContent='Nahrávám...';
   document.getElementById('save-mic-sub').textContent='Stiskni pro stop';
   setStatus('save-status','Poslouchám...');
-  saveRec=startRecognition('cs-CZ',
-    (e)=>{let f='',interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript;}const t=f||interim;if(f)currentTranscript=f;document.getElementById('transcript').textContent=t||'...';showPreview();},
-    ()=>{isSaveRec=false;saveRec=null;document.getElementById('save-mic-btn').classList.remove('recording');document.getElementById('save-mic-label').textContent='Mluvit';document.getElementById('save-mic-sub').textContent='Řekni kde co je';if(currentTranscript)setStatus('save-status','Zkontroluj a ulož.');else setStatus('save-status','');}
-  );
+  saveRec=new SR(); saveRec.lang='cs-CZ'; saveRec.continuous=false; saveRec.interimResults=true;
+  saveRec.onresult=e=>{let f='',im='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f+=e.results[i][0].transcript;else im+=e.results[i][0].transcript;}const t=f||im;if(f)currentTranscript=f;document.getElementById('transcript').textContent=t||'...';showPreview();};
+  saveRec.onerror=()=>{stopSaveRecord();};
+  saveRec.onend=()=>{stopSaveRecord();};
+  saveRec.start();
 }
 
-function toggleSearchRecord(){
-  if(isSearchRec){if(searchRec)try{searchRec.stop();}catch(e){}return;}
-  isSearchRec=true;
-  document.getElementById('search-mic-btn').classList.add('recording');
-  document.getElementById('search-mic-label').textContent='Poslouchám...';
-  document.getElementById('search-mic-sub').textContent='Mluv';
-  setStatus('search-status','Poslouchám...');
-  searchRec=startRecognition('cs-CZ',
-    (e)=>{if(e.results[e.resultIndex].isFinal){const q=e.results[e.resultIndex][0].transcript;if(searchRec)try{searchRec.stop();}catch(e){} searchQuery(q);}},
-    ()=>{isSearchRec=false;searchRec=null;document.getElementById('search-mic-btn').classList.remove('recording');document.getElementById('search-mic-label').textContent='Zeptat se';document.getElementById('search-mic-sub').textContent='Kde je vývrtka?';}
-  );
-}
+function stopSaveRecord(){isSaveRec=false;saveRec=null;document.getElementById('save-mic-btn').classList.remove('recording');document.getElementById('save-mic-label').textContent='Mluvit';document.getElementById('save-mic-sub').textContent='Řekni kde co je';if(currentTranscript)setStatus('save-status','Zkontroluj a ulož.');else setStatus('save-status','');}
 
 function handlePhoto(event){
   const file=event.target.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=(e)=>{currentPhotoBase64=e.target.result;const img=document.getElementById('preview-img');img.src=currentPhotoBase64;img.classList.add('visible');showPreview();setStatus('save-status','Foto přidáno.');};
+  reader.onload=e=>{currentPhotoBase64=e.target.result;const img=document.getElementById('preview-img');img.src=currentPhotoBase64;img.classList.add('visible');showPreview();setStatus('save-status','Foto přidáno.');};
   reader.readAsDataURL(file);
 }
 
@@ -162,12 +152,7 @@ async function saveEntry(){
   if(!currentTranscript&&!currentPhotoBase64){setStatus('save-status','Nejdřív mluv nebo vyfotit.','err');return;}
   const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Ukládám...';setStatus('save-status','Ukládám...');
   try{
-    await fetch(SCRIPT_URL,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({co:currentTranscript||'(foto)',popis:currentTranscript,foto:currentPhotoBase64?'[foto]':'',kde:''})
-    });
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({co:currentTranscript||'(foto)',popis:currentTranscript,foto:currentPhotoBase64?'[foto]':'',kde:''})});
     const now=new Date();const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
     localHistory.unshift({text:currentTranscript||'(foto)',time:t,hasPhoto:!!currentPhotoBase64});
     renderHistory();setStatus('save-status','✓ Uloženo!','ok');clearEntry();
@@ -175,21 +160,25 @@ async function saveEntry(){
   btn.disabled=false;btn.textContent='✓ Uložit';
 }
 
-async function searchQuery(question){
+async function doSearch(){
+  const q=document.getElementById('search-input').value.trim();
+  if(!q)return;
   setStatus('search-status','Hledám...');
-  document.getElementById('answer-question').textContent='"'+question+'"';
+  document.getElementById('answer-question').textContent='"'+q+'"';
   document.getElementById('answer-text').textContent='...';
   document.getElementById('answer-card').classList.add('visible');
+
   try{
-    const resp=await fetch(SCRIPT_URL+'?q='+encodeURIComponent(question));
-    const result=await resp.json();
-    const answer=result.answer||'Bohužel nevím.';
-    document.getElementById('answer-text').textContent=answer;
-    setStatus('search-status','');
-    if(window.speechSynthesis){const utt=new SpeechSynthesisUtterance(answer);utt.lang='cs-CZ';speechSynthesis.speak(utt);}
+    const sheetResp=await fetch(SCRIPT_URL+'?q='+encodeURIComponent(q)+'&t='+Date.now());
+    const data=await sheetResp.json();
+    if(data.answer){
+      document.getElementById('answer-text').textContent=data.answer;
+      setStatus('search-status','');
+      if(window.speechSynthesis){const u=new SpeechSynthesisUtterance(data.answer);u.lang='cs-CZ';speechSynthesis.speak(u);}
+    }
   }catch(e){
-    document.getElementById('answer-text').textContent='Chyba při hledání.';
-    setStatus('search-status',e.message,'err');
+    setStatus('search-status','Chyba: '+e.message,'err');
+    document.getElementById('answer-text').textContent='Zkus to znovu.';
   }
 }
 
