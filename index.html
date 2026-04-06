@@ -170,7 +170,7 @@ async function doSearch(){
   document.getElementById('answer-card').classList.add('visible');
 
   try{
-    const sheetResp=await fetch(SCRIPT_URL+'?q='+encodeURIComponent(q)+'&t='+Date.now());
+    const sheetResp=await fetch(WORKER_URL+'?q='+encodeURIComponent(q));
     const data=await sheetResp.json();
     if(data.answer){
       document.getElementById('answer-text').textContent=data.answer;
