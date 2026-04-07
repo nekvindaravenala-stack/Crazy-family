@@ -113,7 +113,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDEeczmIPyjITZqT6uinxYuX2WF6SPEseE5J_UAGfcowgkCygB_J-iVRrdwEtTllR6YA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyg2pcPdb6jFoMGpe3bez4-vPEeADpZ6wKyDy35GM914k8ox7kYlKsp11Zw3JmfB3PEfw/exec';
 const WORKER_URL = 'https://crazyfamily.nekvinda-ravenala.workers.dev';
 
 
@@ -161,7 +161,7 @@ async function saveEntry(){
   if(!currentTranscript&&!currentPhotoBase64){setStatus('save-status','Nejdřív mluv nebo vyfotit.','err');return;}
   const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Ukládám...';setStatus('save-status','Ukládám...');
   try{
-    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({co:currentTranscript||'(foto)',foto:currentPhotoBase64||''})});
+    await fetch(WORKER_URL + '/save', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({co:currentTranscript||'(foto)',foto:currentPhotoBase64||''})});
     const now=new Date();const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
     localHistory.unshift({text:currentTranscript||'(foto)',time:t,hasPhoto:!!currentPhotoBase64});
     renderHistory();setStatus('save-status','✓ Uloženo!','ok');clearEntry();
