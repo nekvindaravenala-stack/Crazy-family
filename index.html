@@ -161,10 +161,20 @@ async function saveEntry(){
   if(!currentTranscript&&!currentPhotoBase64){setStatus('save-status','Nejdřív mluv nebo vyfotit.','err');return;}
   const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Ukládám...';setStatus('save-status','Ukládám...');
   try{
-    const fd = new FormData();
-    fd.append('co', currentTranscript||'(foto)');
-    if(currentPhotoBase64) fd.append('foto', currentPhotoBase64);
-    await fetch(SCRIPT_URL, {method:'POST', mode:'no-cors', body: fd});
+    let fotoData = '';
+    if(currentPhotoBase64) {
+      const canvas = document.createElement('canvas');
+      const img = new Image();
+      await new Promise(r => { img.onload = r; img.src = currentPhotoBase64; });
+      const MAX = 800;
+      const ratio = Math.min(MAX/img.width, MAX/img.height, 1);
+      canvas.width = img.width * ratio;
+      canvas.height = img.height * ratio;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      fotoData = canvas.toDataURL('image/jpeg', 0.5);
+    }
+    const params = new URLSearchParams({co: currentTranscript||'(foto)', foto: fotoData});
+    await fetch(SCRIPT_URL + '?' + params.toString(), {method:'GET', mode:'no-cors'});
     const now=new Date();const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
     localHistory.unshift({text:currentTranscript||'(foto)',time:t,hasPhoto:!!currentPhotoBase64});
     renderHistory();setStatus('save-status','✓ Uloženo!','ok');clearEntry();
